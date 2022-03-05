@@ -21,8 +21,8 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-#include <stdarg.h >
 #include <stdio.h>
+#include <stdarg.h>
 
 char SCIx_RxChar(void)
 {
