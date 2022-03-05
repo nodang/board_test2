@@ -36,9 +36,11 @@ extern UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN Private defines */
 
+void TxPrintf(char *Form, ... );
 /* USER CODE END Private defines */
 
 void MX_USART1_UART_Init(void);
+
 
 /* USER CODE BEGIN Prototypes */
 
