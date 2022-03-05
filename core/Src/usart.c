@@ -21,6 +21,9 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include <stdarg.h >
+#include <stdio.h>
+
 char SCIx_RxChar(void)
 {
 	volatile UART_HandleTypeDef *USARTx = &huart1;
