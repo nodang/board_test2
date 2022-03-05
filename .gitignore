@@ -1,0 +1,17 @@
+.settings/
+build/
+Debug/
+Drivers/
+Release/
+
+.cproject
+.mexproject
+.project
+Makefile
+
+*.launch
+*.ioc
+*.Id
+*.ld
+*.s
+*.bak
