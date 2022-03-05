@@ -1,0 +1,13 @@
+.settings/
+Debug/
+Drivers/
+Release/
+
+.cproject
+.mexproject
+.project
+
+*.launch
+*.ioc
+*.Id
+*.ld
