@@ -1,4 +1,5 @@
 .settings/
+build/
 Debug/
 Drivers/
 Release/
@@ -6,8 +7,11 @@ Release/
 .cproject
 .mexproject
 .project
+Makefile
 
 *.launch
 *.ioc
 *.Id
 *.ld
+*.s
+*.bak
