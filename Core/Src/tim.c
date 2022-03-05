@@ -108,14 +108,5 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if(htim->Instance == TIM1)
-	{
-		HAL_GPIO_TogglePin(PA12_LED_GPIO_Port, PA12_LED_Pin);
-		HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
 
-	}
-
-}
 /* USER CODE END 1 */

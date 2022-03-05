@@ -18,9 +18,53 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <stdarg.h>
+#include <stdio.h>
+
+
 #include "usart.h"
 
+
 /* USER CODE BEGIN 0 */
+char SCIx_RxChar(void)
+{
+	volatile UART_HandleTypeDef *USARTx = &huart1;
+
+    while((USARTx->Instance->SR & UART_FLAG_RXNE) == RESET);   //wait for Rx Not Empty flag
+    return (uint16_t)(USARTx->Instance->DR & (uint16_t)0x01FF); //read from DR register
+}
+
+
+void SCIx_TxChar(char Data)
+{
+	volatile UART_HandleTypeDef *USARTx = &huart1;
+
+    USARTx->Instance->DR = (Data & (uint16_t)0x01FF);         //write to DR register
+    while((USARTx->Instance->SR & UART_FLAG_TXE) == RESET);  //wait for Tx Empty flag
+}
+
+
+void SCIx_TxString(char *Str)
+{
+    while(*Str)
+    {
+        if(*Str == '\n'){
+            SCIx_TxChar('\r');
+        }
+
+        SCIx_TxChar( *Str++ );
+    }
+}
+
+void TxPrintf(char *Form, ... )
+{
+	static char Buff[128];
+	va_list ArgPtr;
+	va_start(ArgPtr,Form);
+	vsprintf(Buff, Form, ArgPtr);
+    va_end(ArgPtr);
+    SCIx_TxString(Buff);
+}
 
 /* USER CODE END 0 */
 

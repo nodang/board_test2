@@ -1,3 +1,7 @@
-usart.c:31:6:MX_USART1_UART_Init	8	static
-usart.c:59:6:HAL_UART_MspInit	40	static
-usart.c:92:6:HAL_UART_MspDeInit	8	static
+usart.c:29:6:SCIx_RxChar	0	static
+usart.c:38:6:SCIx_TxChar	0	static
+usart.c:47:6:SCIx_TxString	8	static
+usart.c:59:6:TxPrintf	16	static
+usart.c:75:6:MX_USART1_UART_Init	8	static
+usart.c:103:6:HAL_UART_MspInit	40	static
+usart.c:136:6:HAL_UART_MspDeInit	8	static

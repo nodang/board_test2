@@ -17,8 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <stdarg.h>
-#include <stdio.h>
+
 
 #include "main.h"
 #include "tim.h"
@@ -58,45 +57,17 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-char SCIx_RxChar(void)
-{
-	volatile UART_HandleTypeDef *USARTx = &huart1;
 
-    while((USARTx->Instance->SR & UART_FLAG_RXNE) == RESET);   //wait for Rx Not Empty flag
-    return (uint16_t)(USARTx->Instance->DR & (uint16_t)0x01FF); //read from DR register
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if(htim->Instance == TIM1)
+	{
+		HAL_GPIO_TogglePin(PA12_LED_GPIO_Port, PA12_LED_Pin);
+
+	}
+
 }
 
-
-void SCIx_TxChar(char Data)
-{
-	volatile UART_HandleTypeDef *USARTx = &huart1;
-
-    USARTx->Instance->DR = (Data & (uint16_t)0x01FF);         //write to DR register
-    while((USARTx->Instance->SR & UART_FLAG_TXE) == RESET);  //wait for Tx Empty flag
-}
-
-
-void SCIx_TxString(char *Str)
-{
-    while(*Str)
-    {
-        if(*Str == '\n'){
-            SCIx_TxChar('\r');
-        }
-
-        SCIx_TxChar( *Str++ );
-    }
-}
-
-void TxPrintf(char *Form, ... )
-{
-	static char Buff[128];
-	va_list ArgPtr;
-	va_start(ArgPtr,Form);
-	vsprintf(Buff, Form, ArgPtr);
-    va_end(ArgPtr);
-    SCIx_TxString(Buff);
-}
 /* USER CODE END 0 */
 
 /**
@@ -126,14 +97,15 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+
   MX_GPIO_Init();
   MX_TIM1_Init();
   MX_USART1_UART_Init();
+
   /* USER CODE BEGIN 2 */
 
 
   HAL_TIM_Base_Start_IT(&htim1);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -144,10 +116,12 @@ int main(void)
   {
 
 	  //HAL_GPIO_TogglePin(PA12_LED_GPIO_Port, PA12_LED_Pin);
-	  //HAL_Delay(1000);
-	  //HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
-	 TxPrintf("HELLO\n");
-	 HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
+	  HAL_Delay(1000);
+
+
+	 //TxPrintf("HI\n");
+	 //HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 
