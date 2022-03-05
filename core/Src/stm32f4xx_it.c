@@ -57,6 +57,7 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim3;
+
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
@@ -229,6 +230,7 @@ void TIM3_IRQHandler(void)
 }
 
 /**
+
   * @brief This function handles USART1 global interrupt.
   */
 void USART1_IRQHandler(void)
