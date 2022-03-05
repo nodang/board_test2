@@ -41,7 +41,6 @@ void TxPrintf(char *Form, ... );
 
 void MX_USART1_UART_Init(void);
 
-
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */
