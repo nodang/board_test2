@@ -24,7 +24,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#define __STRUCT__
 
+#include "struct.h"
+#include "motor.h"
 
 /* USER CODE END Includes */
 
@@ -57,15 +60,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if(htim->Instance == TIM1)
-	{
-		HAL_GPIO_TogglePin(PA12_LED_GPIO_Port, PA12_LED_Pin);
 
-	}
-
-}
 
 /* USER CODE END 0 */
 
@@ -97,41 +92,39 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM1_Init();
   MX_USART1_UART_Init();
-  MX_TIM3_Init();
+  MX_TIM8_Init();
+  MX_TIM7_Init();
+  MX_TIM9_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 
+  // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+
+  HAL_TIM_Base_Start_IT(&htim9);	// APB2 TIMER IT(168)
+  HAL_TIM_Base_Start_IT(&htim7);	// APB1 TIMER IT(84)
+  HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
+  HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
+
+  init_motor_variable(&g_motor);
 
 
-  MX_TIM3_Init();
-  /* USER CODE BEGIN 2 */
-
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
-
   while (1)
   {
+	  //TxPrintf("|sample : %d|value : %d|\n", g_motor.u16qep_sample, g_motor.int16qep_value );
+	  //TxPrintf("flag1 : %u |flag2 : %u pid_out : %f |\n", (PD7_LED_GPIO_Port->IDR & PD7_LED_Pin),HAL_GPIO_ReadPin(PD7_LED_GPIO_Port, PD7_LED_Pin), g_motor.fp32PID_output );
 
-	  //HAL_GPIO_TogglePin(PA12_LED_GPIO_Port, PA12_LED_Pin);
-	  HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
+	  //PA12_MOTOR_DIR_GPIO_Port->BSRR = PA12_MOTOR_DIR_Pin;  // gpio set;
+	  //PA12_MOTOR_DIR_GPIO_Port->BSRR = (uint32_t)PA12_MOTOR_DIR_Pin << 16U; 	// gpio reset
 
-	  HAL_Delay(1000);
-
-
-	 //TxPrintf("HI\n");
-
-
-	  TxPrintf("test\n");
-	  HAL_Delay(1000);
-
-
-	 //HAL_Delay(1000);
+	  TxPrintf("PB7 : %u |PD7 : %u |PA12 : %u \n",
+			  HAL_GPIO_ReadPin(PB7_MOTOR_DIR_GPIO_Port, PB7_MOTOR_DIR_Pin) ,
+			  HAL_GPIO_ReadPin(PD7_LED_GPIO_Port, PD7_LED_Pin),
+			  HAL_GPIO_ReadPin(PA12_MOTOR_DIR_GPIO_Port, PA12_MOTOR_DIR_Pin) );
 
     /* USER CODE END WHILE */
 
