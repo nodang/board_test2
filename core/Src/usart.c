@@ -28,28 +28,16 @@
 #include <string.h>
 
 #define DMA_BUF_SIZE 128
+#define TX_PRINT_BUF_SIZE 128
 uint8_t buf;
 uint8_t rxBuffer[DMA_BUF_SIZE];
 uint8_t txBuffer[] = "Something's wrong\r\n";
-
+/*
 char USARTx_RxChar(volatile UART_HandleTypeDef *USARTx)
 {
     while((USARTx->Instance->SR & UART_FLAG_RXNE) == RESET);   //wait for Rx Not Empty flag
     return (uint16_t)(USARTx->Instance->DR & (uint16_t)0x01FF); //read from DR register
 }
-
-
-void RxBuffer(void)
-{
-	if(buf == '\r' || buf == '\n') {
-		TxPrintf("%s\n", rxBuffer);
-		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*DMA_BUF_SIZE);
-	}
-	else {
-		strncat((char*)rxBuffer, (char*)&buf, 1);
-	}
-}
-
 
 void USARTx_TxChar(volatile UART_HandleTypeDef *USARTx, char Data)
 {
@@ -71,8 +59,8 @@ void USARTx_TxString(volatile UART_HandleTypeDef *USARTx, char *Str)
 
 void TxPrintf(char *Form, ... )
 {
-	huart1.gState = HAL_UART_STATE_BUSY_TX;
-	static char Buff[128];
+	huart1.gState |= HAL_UART_STATE_BUSY_TX;
+	static char Buff[TX_PRINT_BUF_SIZE];
 	va_list ArgPtr;
 	va_start(ArgPtr,Form);
 	vsprintf(Buff, Form, ArgPtr);
@@ -80,14 +68,46 @@ void TxPrintf(char *Form, ... )
     USARTx_TxString(&huart1, Buff);
 	huart1.gState = HAL_UART_STATE_READY;
 }
+*/
+void USARTx_TxString(volatile UART_HandleTypeDef *USARTx, char *Str)
+{
+	while(*Str)
+	{
+		if(*Str == '\n'){
+			static char CR = '\r';
+			HAL_UART_Transmit(&huart1, (uint8_t*)&CR , 1, 5);
+		}
+
+		HAL_UART_Transmit(&huart1, (uint8_t*)Str , 1, 5);
+		Str++;
+	}
+}
+
+void TxPrintf(char *Form, ... )
+{
+	static char Buff[TX_PRINT_BUF_SIZE] = {0,};
+	va_list ArgPtr;
+	va_start(ArgPtr,Form);
+	vsprintf(Buff, Form, ArgPtr);
+	va_end(ArgPtr);
+	USARTx_TxString(&huart1, Buff);
+}
+
+void RxBuffer(void)
+{
+	if(buf == '\r' || buf == '\n') {
+		//TxPrintf("%s\n", rxBuffer);
+		TxPrintf("%s\n", rxBuffer);
+		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*DMA_BUF_SIZE);
+	}
+	else {
+		strncat((char*)rxBuffer, (char*)&buf, 1);
+	}
+}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	//uint16_t len = sizeof(txBuffer) - 1;
-	uint8_t data = 'S';
-	TxPrintf("%x || ", huart->gState);
-	HAL_UART_Transmit_DMA(&huart1, &data, 1);
-	TxPrintf("%x\n", huart->gState);
+	//HAL_UART_Transmit_DMA(&huart1, &data, 1);
 	if(huart->Instance == USART1) {
 		RxBuffer();
 		//HAL_UART_Transmit_IT(&huart1, rxBuffer, DMA_BUF_SIZE, 10);	// \n is not materialized. so, enter key is not worked.
