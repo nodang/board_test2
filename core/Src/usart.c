@@ -27,10 +27,9 @@
 #include <stdarg.h>
 #include <string.h>
 
-#define DMA_BUF_SIZE 128
-#define TX_PRINT_BUF_SIZE 128
+#define BUF_SIZE 128
 uint8_t buf;
-uint8_t rxBuffer[DMA_BUF_SIZE];
+uint8_t rxBuffer[BUF_SIZE];
 uint8_t txBuffer[] = "Something's wrong\r\n";
 /*
 char USARTx_RxChar(volatile UART_HandleTypeDef *USARTx)
@@ -71,21 +70,25 @@ void TxPrintf(char *Form, ... )
 */
 void USARTx_TxString(volatile UART_HandleTypeDef *USARTx, char *Str)
 {
+	char* str_address = Str;
+	uint8_t str_cnt = 0;
+
 	while(*Str)
 	{
 		if(*Str == '\n'){
 			static char CR = '\r';
-			HAL_UART_Transmit(&huart1, (uint8_t*)&CR , 1, 5);
+			strncat((char*)Str, (char*)&CR, 1);
+			str_cnt++;
 		}
-
-		HAL_UART_Transmit(&huart1, (uint8_t*)Str , 1, 5);
+		str_cnt++;
 		Str++;
 	}
+	HAL_UART_Transmit(&huart1, (uint8_t*)str_address , str_cnt, 2);
 }
 
 void TxPrintf(char *Form, ... )
 {
-	static char Buff[TX_PRINT_BUF_SIZE] = {0,};
+	static char Buff[BUF_SIZE] = {0,};
 	va_list ArgPtr;
 	va_start(ArgPtr,Form);
 	vsprintf(Buff, Form, ArgPtr);
@@ -98,7 +101,7 @@ void RxBuffer(void)
 	if(buf == '\r' || buf == '\n') {
 		//TxPrintf("%s\n", rxBuffer);
 		TxPrintf("%s\n", rxBuffer);
-		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*DMA_BUF_SIZE);
+		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*BUF_SIZE);
 	}
 	else {
 		strncat((char*)rxBuffer, (char*)&buf, 1);
