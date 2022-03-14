@@ -120,7 +120,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  TxPrintf(	"-----\nRESET\n-----\n");
+  TxPrintf("\n-----\nRESET\n-----\n");
 
   while (1)
   {
@@ -143,12 +143,12 @@ int main(void)
 	  //HAL_Delay(1000);
 
 
-
+/*
 	  TxPrintf("PB7 : %u |PD7 : %u |PA12 : %u \n",
 			  HAL_GPIO_ReadPin(PB7_MOTOR_DIR_GPIO_Port, PB7_MOTOR_DIR_Pin) ,
 			  HAL_GPIO_ReadPin(PD7_LED_GPIO_Port, PD7_LED_Pin),
 			  HAL_GPIO_ReadPin(PA12_MOTOR_DIR_GPIO_Port, PA12_MOTOR_DIR_Pin) );
-
+*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
