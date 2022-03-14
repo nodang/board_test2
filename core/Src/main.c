@@ -112,15 +112,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  
-  TxPrintf("\n\nRESET\n\n");
+  TxPrintf(	"-----\nRESET\n-----\n");
 
   while (1)
   {
 
-	  //HAL_GPIO_TogglePin(PA12_LED_GPIO_Port, PA12_LED_Pin);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
 	  //HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
-	  //HAL_Delay(1000);
+	  HAL_Delay(1000);
 
 
 	 //TxPrintf("HI\n");

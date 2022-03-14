@@ -21,8 +21,9 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include "tim.h"
+
 #include <memory.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -31,7 +32,10 @@
 uint8_t buf;
 uint8_t rxBuffer[BUF_SIZE];
 uint8_t txBuffer[] = "Something's wrong\r\n";
-/*
+
+uint32_t tim3_cnt = 0;
+
+
 char USARTx_RxChar(volatile UART_HandleTypeDef *USARTx)
 {
     while((USARTx->Instance->SR & UART_FLAG_RXNE) == RESET);   //wait for Rx Not Empty flag
@@ -59,7 +63,7 @@ void USARTx_TxString(volatile UART_HandleTypeDef *USARTx, char *Str)
 void TxPrintf(char *Form, ... )
 {
 	huart1.gState |= HAL_UART_STATE_BUSY_TX;
-	static char Buff[TX_PRINT_BUF_SIZE];
+	static char Buff[BUF_SIZE];
 	va_list ArgPtr;
 	va_start(ArgPtr,Form);
 	vsprintf(Buff, Form, ArgPtr);
@@ -67,40 +71,42 @@ void TxPrintf(char *Form, ... )
     USARTx_TxString(&huart1, Buff);
 	huart1.gState = HAL_UART_STATE_READY;
 }
-*/
-void USARTx_TxString(volatile UART_HandleTypeDef *USARTx, char *Str)
+
+void USARTx_TxString_R(volatile UART_HandleTypeDef *USARTx, char *Str)
 {
-	char* str_address = Str;
-	uint8_t str_cnt = 0;
+	static char buff[BUF_SIZE] = {0,};
+	static char CR = '\r';
+	uint16_t str_cnt = 0;
 
 	while(*Str)
 	{
 		if(*Str == '\n'){
-			static char CR = '\r';
-			strncat((char*)Str, (char*)&CR, 1);
+			strncat((char*)buff, (char*)&CR, 1);
 			str_cnt++;
 		}
+		strncat((char*)buff, (char*)Str++, 1);
 		str_cnt++;
-		Str++;
 	}
-	HAL_UART_Transmit(&huart1, (uint8_t*)str_address , str_cnt, 2);
+	HAL_UART_Transmit(&huart1, (uint8_t*)buff , str_cnt, 5);
 }
 
-void TxPrintf(char *Form, ... )
+void TxPrintf_R(char *Form, ... )
 {
+	tim3_cnt = htim1.Instance->CNT;
 	static char Buff[BUF_SIZE] = {0,};
 	va_list ArgPtr;
 	va_start(ArgPtr,Form);
 	vsprintf(Buff, Form, ArgPtr);
 	va_end(ArgPtr);
 	USARTx_TxString(&huart1, Buff);
+	tim3_cnt -= htim1.Instance->CNT;
 }
 
 void RxBuffer(void)
 {
 	if(buf == '\r' || buf == '\n') {
-		//TxPrintf("%s\n", rxBuffer);
-		TxPrintf("%s\n", rxBuffer);
+		TxPrintf_R("fdbk :%s |", rxBuffer);
+		TxPrintf("tm :%d\n", tim3_cnt);
 		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*BUF_SIZE);
 	}
 	else {
@@ -110,10 +116,9 @@ void RxBuffer(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	//HAL_UART_Transmit_DMA(&huart1, &data, 1);
+	//HAL_UART_Transmit_DMA(&huart1, &buf, 1);
 	if(huart->Instance == USART1) {
 		RxBuffer();
-		//HAL_UART_Transmit_IT(&huart1, rxBuffer, DMA_BUF_SIZE, 10);	// \n is not materialized. so, enter key is not worked.
 
 		HAL_UART_Receive_IT(&huart1, &buf, 1);
 	}
