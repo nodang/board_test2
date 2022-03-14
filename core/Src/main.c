@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -93,6 +94,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
+  MX_DMA_Init();
+  MX_TIM1_Init();
   MX_TIM8_Init();
   MX_TIM7_Init();
   MX_TIM9_Init();
@@ -108,18 +111,38 @@ int main(void)
 
   init_motor_variable(&g_motor);
 
+  HAL_TIM_Base_Start_IT(&htim1);
+
+  Receive_DMA();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  TxPrintf(	"-----\nRESET\n-----\n");
+
   while (1)
   {
 	  //TxPrintf("|sample : %d|value : %d|\n", g_motor.u16qep_sample, g_motor.int16qep_value );
 	  //TxPrintf("flag1 : %u |flag2 : %u pid_out : %f |\n", (PD7_LED_GPIO_Port->IDR & PD7_LED_Pin),HAL_GPIO_ReadPin(PD7_LED_GPIO_Port, PD7_LED_Pin), g_motor.fp32PID_output );
 
+
 	  //PA12_MOTOR_DIR_GPIO_Port->BSRR = PA12_MOTOR_DIR_Pin;  // gpio set;
 	  //PA12_MOTOR_DIR_GPIO_Port->BSRR = (uint32_t)PA12_MOTOR_DIR_Pin << 16U; 	// gpio reset
+
+	  //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
+	  //HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
+	  //HAL_Delay(1000);
+
+
+	 //TxPrintf("HI\n");
+
+
+	  //TxPrintf("test\n");
+	  //HAL_Delay(1000);
+
+
 
 	  TxPrintf("PB7 : %u |PD7 : %u |PA12 : %u \n",
 			  HAL_GPIO_ReadPin(PB7_MOTOR_DIR_GPIO_Port, PB7_MOTOR_DIR_Pin) ,

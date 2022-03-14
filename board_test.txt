@@ -1,0 +1,90 @@
+Configuration	board_test
+STM32CubeMX 	6.4.0
+Date	03/14/2022
+MCU	STM32F407VETx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+TIM1	Internal Clock	TIM1_VS_ClockSourceINT	VP_TIM1_VS_ClockSourceINT
+TIM8	Encoder Mode	TIM8_CH1	PC6
+TIM8	Encoder Mode	TIM8_CH2	PC7
+TIM9	Internal Clock	TIM9_VS_ClockSourceINT	VP_TIM9_VS_ClockSourceINT
+TIM10	Enable_Timer	TIM10_VS_ClockSourceINT	VP_TIM10_VS_ClockSourceINT
+TIM10	PWM Generation CH1	TIM10_CH1	PB8
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+63	PC6	TIM8_CH1	
+64	PC7	TIM8_CH2	
+68	PA9	USART1_TX	
+69	PA10	USART1_RX	
+71	PA12	GPIO_Output	PA12_MOTOR_DIR
+72	PA13	SYS_JTMS-SWDIO	
+76	PA14	SYS_JTCK-SWCLK	
+77	PA15	GPIO_Output	receive_:led
+88	PD7	GPIO_Output	PD7_LED
+90	PB4	GPIO_Output	transmit_led
+93	PB7	GPIO_Output	PB7_MOTOR_DIR
+95	PB8	TIM10_CH1	
+PERIPHERALS	MODES	FUNCTIONS	PINS
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+TIM1	Internal Clock	TIM1_VS_ClockSourceINT	VP_TIM1_VS_ClockSourceINT
+TIM8	Encoder Mode	TIM8_CH1	PC6
+TIM8	Encoder Mode	TIM8_CH2	PC7
+TIM9	Internal Clock	TIM9_VS_ClockSourceINT	VP_TIM9_VS_ClockSourceINT
+TIM10	Enable_Timer	TIM10_VS_ClockSourceINT	VP_TIM10_VS_ClockSourceINT
+TIM10	PWM Generation CH1	TIM10_CH1	PB8
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+63	PC6	TIM8_CH1	
+64	PC7	TIM8_CH2	
+68	PA9	USART1_TX	
+69	PA10	USART1_RX	
+71	PA12	GPIO_Output	PA12_MOTOR_DIR
+72	PA13	SYS_JTMS-SWDIO	
+76	PA14	SYS_JTCK-SWCLK	
+77	PA15	GPIO_Output	receive_:led
+88	PD7	GPIO_Output	PD7_LED
+90	PB4	GPIO_Output	transmit_led
+93	PB7	GPIO_Output	PB7_MOTOR_DIR
+95	PB8	TIM10_CH1	
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : board_test
+Project Folder : C:\a_STM32F4_develop\jinseong_test\board_test2
+Toolchain / IDE : Makefile
+Firmware Package Name and Version : STM32Cube FW_F4 V1.26.2
+
+
+Code Generation Settings : 
+STM32Cube MCU packages and embedded software packs : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : Yes
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+
