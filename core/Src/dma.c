@@ -54,5 +54,8 @@ void MX_DMA_Init(void)
 
 /* USER CODE BEGIN 2 */
 
+// DMA2_Stream2_channel4 = USART1_RX
+// DMA2_Stream7_channel4 = USART1_TX
+
 /* USER CODE END 2 */
 

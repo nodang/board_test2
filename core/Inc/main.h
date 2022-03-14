@@ -59,8 +59,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define PA12_LED_Pin GPIO_PIN_12
 #define PA12_LED_GPIO_Port GPIOA
+#define receive__led_Pin GPIO_PIN_15
+#define receive__led_GPIO_Port GPIOA
 #define PD7_LED_Pin GPIO_PIN_7
 #define PD7_LED_GPIO_Port GPIOD
+#define transmit_led_Pin GPIO_PIN_4
+#define transmit_led_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -117,9 +117,9 @@ int main(void)
   while (1)
   {
 
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
+	  //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
 	  //HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
-	  HAL_Delay(1000);
+	  //HAL_Delay(1000);
 
 
 	 //TxPrintf("HI\n");

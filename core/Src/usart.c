@@ -28,12 +28,21 @@
 #include <stdarg.h>
 #include <string.h>
 
+#define TX_LED_ON	HAL_GPIO_WritePin(transmit_led_GPIO_Port,transmit_led_Pin,RESET)
+#define TX_LED_OFF	HAL_GPIO_WritePin(transmit_led_GPIO_Port,transmit_led_Pin,SET)
+#define RX_LED_ON	HAL_GPIO_WritePin(receive__led_GPIO_Port,receive__led_Pin,RESET)
+#define RX_LED_OFF	HAL_GPIO_WritePin(receive__led_GPIO_Port,receive__led_Pin,SET)
+
 #define BUF_SIZE 128
 uint8_t buf;
 uint8_t rxBuffer[BUF_SIZE];
-uint8_t txBuffer[] = "Something's wrong\r\n";
+uint8_t txBuffer[BUF_SIZE];
+uint16_t strCnt = 0;
 
-uint32_t tim3_cnt = 0;
+uint8_t txERR[] = "Something's wrong\r\n";
+
+static char CR = '\r';
+static uint32_t tim_cnt = 0;
 
 
 char USARTx_RxChar(volatile UART_HandleTypeDef *USARTx)
@@ -62,6 +71,8 @@ void USARTx_TxString(volatile UART_HandleTypeDef *USARTx, char *Str)
 
 void TxPrintf(char *Form, ... )
 {
+	RX_LED_ON;
+	
 	huart1.gState |= HAL_UART_STATE_BUSY_TX;
 	static char Buff[BUF_SIZE];
 	va_list ArgPtr;
@@ -70,43 +81,52 @@ void TxPrintf(char *Form, ... )
     va_end(ArgPtr);
     USARTx_TxString(&huart1, Buff);
 	huart1.gState = HAL_UART_STATE_READY;
+
+	RX_LED_OFF;
 }
 
 void USARTx_TxString_R(volatile UART_HandleTypeDef *USARTx, char *Str)
 {
-	static char buff[BUF_SIZE] = {0,};
-	static char CR = '\r';
-	uint16_t str_cnt = 0;
+	memset((void*)txBuffer, 0x00, sizeof(uint8_t)*BUF_SIZE);
+	strCnt = 0;
 
 	while(*Str)
 	{
-		if(*Str == '\n'){
-			strncat((char*)buff, (char*)&CR, 1);
-			str_cnt++;
+		if(*Str == '\n') {
+			strncat((char*)txBuffer, (char*)&CR, 1);
+			strCnt++;
 		}
-		strncat((char*)buff, (char*)Str++, 1);
-		str_cnt++;
+		strncat((char*)txBuffer, (char*)Str++, 1);
+		strCnt++;
 	}
-	HAL_UART_Transmit(&huart1, (uint8_t*)buff , str_cnt, 5);
+	if(strCnt == 0)
+		return;
+	
+	//HAL_UART_Transmit(&huart1, (uint8_t*)txBuffer, ++strCnt, 1);
+	HAL_UART_Transmit_DMA(&huart1, (uint8_t*)txBuffer, 1);
 }
 
 void TxPrintf_R(char *Form, ... )
 {
-	tim3_cnt = htim1.Instance->CNT;
-	static char Buff[BUF_SIZE] = {0,};
+	RX_LED_ON;
+	
+	tim_cnt = htim1.Instance->CNT;
+	static char Buff[BUF_SIZE];
 	va_list ArgPtr;
 	va_start(ArgPtr,Form);
 	vsprintf(Buff, Form, ArgPtr);
 	va_end(ArgPtr);
-	USARTx_TxString(&huart1, Buff);
-	tim3_cnt -= htim1.Instance->CNT;
+	USARTx_TxString_R(&huart1, Buff);
+	tim_cnt -= htim1.Instance->CNT;
+	
+	RX_LED_OFF;
 }
 
 void RxBuffer(void)
 {
 	if(buf == '\r' || buf == '\n') {
-		TxPrintf_R("fdbk :%s |", rxBuffer);
-		TxPrintf("tm :%d\n", tim3_cnt);
+		TxPrintf_R("%s", rxBuffer);
+		TxPrintf(" | tm :%d\n", tim_cnt);
 		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*BUF_SIZE);
 	}
 	else {
@@ -114,14 +134,22 @@ void RxBuffer(void)
 	}
 }
 
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef * huart)
+{
+	HAL_UART_Transmit_DMA(&huart1, (uint8_t*)txBuffer, 1);
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	//HAL_UART_Transmit_DMA(&huart1, &buf, 1);
+	TX_LED_ON;
+	
 	if(huart->Instance == USART1) {
 		RxBuffer();
 
 		HAL_UART_Receive_IT(&huart1, &buf, 1);
 	}
+	
+	TX_LED_OFF;
 }
 
 void Receive_DMA(void)
