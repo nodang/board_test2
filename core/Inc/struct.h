@@ -82,7 +82,7 @@ typedef volatile struct motor_variable
 
 }motor_vari;
 
-motor_vari g_motor;
+__STRUCT_EXT__ motor_vari g_motor;
 //__STRUCT_EXT__ motor_vari	g_motor;
 //__STRUCT_EXT__ motor_vari	R_motor;
 //__STRUCT_EXT__ motor_vari	L_motor;
