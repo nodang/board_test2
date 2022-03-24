@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -94,7 +93,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
-  MX_DMA_Init();
   MX_TIM1_Init();
   MX_TIM8_Init();
   MX_TIM7_Init();
@@ -124,7 +122,8 @@ int main(void)
 
   while (1)
   {
-	  //TxPrintf("|sample : %d|value : %d|\n", g_motor.u16qep_sample, g_motor.int16qep_value );
+
+	  TxPrintf("|sample : %d|value : %d|\n", g_motor.u16qep_sample, g_motor.int16qep_value );
 	  //TxPrintf("flag1 : %u |flag2 : %u pid_out : %f |\n", (PD7_LED_GPIO_Port->IDR & PD7_LED_Pin),HAL_GPIO_ReadPin(PD7_LED_GPIO_Port, PD7_LED_Pin), g_motor.fp32PID_output );
 
 
@@ -134,11 +133,6 @@ int main(void)
 	  //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_15);
 	  //HAL_GPIO_TogglePin(PD7_LED_GPIO_Port, PD7_LED_Pin);
 	  //HAL_Delay(1000);
-
-
-	 //TxPrintf("HI\n");
-
-
 	  //TxPrintf("test\n");
 	  //HAL_Delay(1000);
 
