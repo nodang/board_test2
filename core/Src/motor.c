@@ -254,7 +254,7 @@ void timer9_motor_ISR()
 
 
 
-				PA12_MOTOR_DIR_GPIO_Port->BSRR = PA12_MOTOR_DIR_Pin;  // gpio set;
+				//PA12_MOTOR_DIR_GPIO_Port->BSRR = PA12_MOTOR_DIR_Pin;  // gpio set;
 
 				TIM10->CCR1 = ( uint32_t )( g_motor.fp32PID_output * PWM_CONVERT );
 
@@ -266,7 +266,7 @@ void timer9_motor_ISR()
 					g_motor.fp32PID_output = MIN_PID_OUT;
 
 
-				PA12_MOTOR_DIR_GPIO_Port->BSRR = (uint32_t)PA12_MOTOR_DIR_Pin << 16U; 	// gpio reset
+				//PA12_MOTOR_DIR_GPIO_Port->BSRR = (uint32_t)PA12_MOTOR_DIR_Pin << 16U; 	// gpio reset
 
 				TIM10->CCR1 = ( uint32_t )( g_motor.fp32PID_output * PWM_CONVERT * (-1) );
 

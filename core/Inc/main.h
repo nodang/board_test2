@@ -57,8 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define PA12_MOTOR_DIR_Pin GPIO_PIN_12
-#define PA12_MOTOR_DIR_GPIO_Port GPIOA
 #define receive__led_Pin GPIO_PIN_15
 #define receive__led_GPIO_Port GPIOA
 #define PD7_LED_Pin GPIO_PIN_7
