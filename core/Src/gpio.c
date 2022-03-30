@@ -51,19 +51,13 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(PA12_MOTOR_DIR_GPIO_Port, PA12_MOTOR_DIR_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(receive__led_GPIO_Port, receive__led_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, PA12_MOTOR_DIR_Pin|receive__led_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PD7_LED_GPIO_Port, PD7_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(transmit_led_GPIO_Port, transmit_led_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(PB7_MOTOR_DIR_GPIO_Port, PB7_MOTOR_DIR_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, transmit_led_Pin|PB7_MOTOR_DIR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = PA12_MOTOR_DIR_Pin;

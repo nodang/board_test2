@@ -83,7 +83,7 @@ void TxPrintf(char *Form, ... )
 void RxBuffer(void)
 {
 	if(buf == '\r' || buf == '\n') {
-		TxPrintf("%s\n", rxBuffer);
+		//TxPrintf("%s\n", rxBuffer);
 		//TxPrintf(" | tm :%d\n", tim_cnt);
 		memset((void*)rxBuffer, 0x00, sizeof(uint8_t)*BUF_SIZE);
 	}

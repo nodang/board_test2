@@ -20,12 +20,25 @@
 #define SAMPLE_FRQ_MS			0.25
 
 //PULSE_TO_D = (WHEEL_RADIUS * M_PI) / (encoder_pulse * 4) / geer_ratio
+
+// (65 * M_PI) / 52 / 12 * 1.39534884 = 16.744186  ->  0.2345286188881472
+//#define PULSE_TO_D				0.234528618888	1472
+//#define PULSE_TO_V  				938.1144755525	888
+
+//#define PULSE_TO_D				0.234528618888
+//#define PULSE_TO_V  				938.1144755525
+
+
+
 //(36 * M_PI) / 2048 / 3.35
 #define PULSE_TO_D				0.016484569660
 
 //PULSE_TO_V = (WHEEL_RADIUS * M_PI) / (encoder_pulse * 4) / geer_ratio / SAMPLE_FRQ
 //(36 * M_PI) / 2048 / 3.35 / 0.00025
+
 #define PULSE_TO_V  			65.93827864344
+
+
 
 ////////////////////////////////////////////       PID information       ///////////////////////////////////////////////////
 
@@ -111,7 +124,7 @@ void timer9_motor_ISR()
 	// htim->Instance->psc 		// prescaler set
 
 	//cnt = TIM8->CNT;			// encoder count input
-	//TIM8->CNT = 0;				// encoder count clear
+	//TIM8->CNT = 0;			// encoder count clear
 
 #if 1 // motor interrupt
 
@@ -122,7 +135,8 @@ void timer9_motor_ISR()
 	TIM8->CNT = 0;							// encoder count clear
 
 	/* qep counter value signed */
-	g_motor.int16qep_value = g_motor.u16qep_sample > 1024 ? ( int16_t )( g_motor.u16qep_sample ) - 2049 : ( int16_t )g_motor.u16qep_sample;
+	//g_motor.int16qep_value = g_motor.u16qep_sample > 1024 ? ( int16_t )( g_motor.u16qep_sample ) - 2049 : ( int16_t )g_motor.u16qep_sample;
+	g_motor.int16qep_value = g_motor.u16qep_sample > 26 ? ( int16_t )( g_motor.u16qep_sample ) - 53 : ( int16_t )g_motor.u16qep_sample;
 
 	/* distance compute */
 	g_motor.fp32tick_distance = ( float )g_motor.int16qep_value * ( float )PULSE_TO_D;
