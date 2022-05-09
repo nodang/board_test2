@@ -31,7 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <math.h>
+#include <string.h>
+#include "struct.h"
+#include "control_flow.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -59,12 +62,18 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define receive__led_Pin GPIO_PIN_15
 #define receive__led_GPIO_Port GPIOA
+#define break_light_Pin GPIO_PIN_0
+#define break_light_GPIO_Port GPIOD
+#define blinker_right_Pin GPIO_PIN_1
+#define blinker_right_GPIO_Port GPIOD
+#define blinker_left_Pin GPIO_PIN_2
+#define blinker_left_GPIO_Port GPIOD
 #define PD7_LED_Pin GPIO_PIN_7
 #define PD7_LED_GPIO_Port GPIOD
 #define transmit_led_Pin GPIO_PIN_4
 #define transmit_led_GPIO_Port GPIOB
-#define PB7_MOTOR_DIR_Pin GPIO_PIN_7
-#define PB7_MOTOR_DIR_GPIO_Port GPIOB
+#define motor_dir_Pin GPIO_PIN_0
+#define motor_dir_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
 

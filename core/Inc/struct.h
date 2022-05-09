@@ -5,20 +5,12 @@
  *      Author: kimjs
  */
 
-#ifndef INC_STRUCT_H_
-#define INC_STRUCT_H_
+#ifndef __STRUCT_H__
+#define __STRUCT_H__
 
-
-#ifdef __STRUCT__
-
-#undef __STRUCT__
-#define __STRUCT_EXT__
-
-#else
-#define __STRUCT_EXT__	extern
+#ifdef __cplusplus
+extern "C" {
 #endif
-
-
 
 typedef volatile struct bit_field_flag
 {
@@ -39,8 +31,6 @@ typedef volatile struct bit_field_flag
 
 
 }bit_field_flag_t;
-
-__STRUCT_EXT__ bit_field_flag_t	g_Flag;
 
 
 typedef volatile struct motor_variable
@@ -82,10 +72,38 @@ typedef volatile struct motor_variable
 
 }motor_vari;
 
-__STRUCT_EXT__ motor_vari g_motor;
+typedef struct {
+	uint8_t 			rsvd:5;
+	uint8_t 			blinker:1;
+	uint8_t 			turn_onoff:1;
+	uint8_t 			move_onoff:1;	
+} st_flag;
+
+union un_flag {
+	uint8_t 			all;
+	st_flag 			bit;
+};
+
+typedef struct {
+	uint8_t 			start;
+	uint8_t 			mode;
+	union 	un_flag 	flag;
+	uint8_t 			angle;
+	uint8_t 			stop;
+} st_protocol;
+
+
 //__STRUCT_EXT__ motor_vari	g_motor;
 //__STRUCT_EXT__ motor_vari	R_motor;
 //__STRUCT_EXT__ motor_vari	L_motor;
 
 
-#endif /* INC_STRUCT_H_ */
+//__STRUCT_EXT__
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __STRUCT_H__ */
+
