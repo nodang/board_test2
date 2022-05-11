@@ -4,7 +4,7 @@
  *  Created on: 2022. 3. 10.
  *      Author: kimjs
  */
-#include "motor.h"
+#include "user_motor.h"
 
 
 ///////////////////////////////////////////////    motor information   ///////////////////////////////////////////////////

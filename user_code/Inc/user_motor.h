@@ -12,7 +12,6 @@
 extern "C" {
 #endif
 
-
 #include "main.h"
 
 extern RT_MODEL_control_flow_T control_flow;

@@ -24,8 +24,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "motor.h"
-
 
 /* USER CODE END Includes */
 
@@ -95,13 +93,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
-  MX_TIM7_Init();
   MX_TIM8_Init();
   MX_TIM9_Init();
   MX_TIM10_Init();
   MX_USART1_UART_Init();
   MX_TIM11_Init();
   MX_USART2_UART_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 
   // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
@@ -126,10 +124,10 @@ int main(void)
 
   control_flow_initialize(&control_flow);
 
-  control_flow.inputs->Input1.input_angle_r64 = (real32_T)0;
-  control_flow.inputs->Input1.input_velo_r64 = (real32_T)0;
+  control_flow.inputs->Input1.input_angle_r32 = (real32_T)0;
+  control_flow.inputs->Input1.input_velo_r32 = (real32_T)0;
 
-  Receive_DMA();
+  receive_uart_start_it();
 
   /* USER CODE END 2 */
 

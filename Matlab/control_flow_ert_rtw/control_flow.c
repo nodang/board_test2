@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_flow'.
  *
- * Model version                  : 1.159
+ * Model version                  : 1.162
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed May  4 03:15:37 2022
+ * C/C++ source code generated on : Wed May 11 16:41:14 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -58,8 +58,8 @@ const RETURN control_flow_rtZRETURN = {
 
 void control_flow_servo_dir_Init(B_servo_dir_control_flow_T *localB,
   DW_servo_dir_control_flow_T *localDW);
-void control_flow_servo_dir(real32_T rtu_angle, uint8_T rtu_turn_able_flag,
-  B_servo_dir_control_flow_T *localB, DW_servo_dir_control_flow_T *localDW);
+void control_flow_servo_dir(real32_T rtu_angle, B_servo_dir_control_flow_T
+  *localB, DW_servo_dir_control_flow_T *localDW);
 void control_flow_velo_adjust_Init(B_velo_adjust_control_flow_T *localB,
   DW_velo_adjust_control_flow_T *localDW);
 void control_flow_velo_adjust(uint16_T rtu_encoder, B_velo_adjust_control_flow_T
@@ -105,8 +105,8 @@ void control_flow_servo_dir_Init(B_servo_dir_control_flow_T *localB,
 }
 
 /* Output and update for atomic system: '<S1>/servo_dir' */
-void control_flow_servo_dir(real32_T rtu_angle, uint8_T rtu_turn_able_flag,
-  B_servo_dir_control_flow_T *localB, DW_servo_dir_control_flow_T *localDW)
+void control_flow_servo_dir(real32_T rtu_angle, B_servo_dir_control_flow_T
+  *localB, DW_servo_dir_control_flow_T *localDW)
 {
   real32_T ang_temp;
 
@@ -119,18 +119,12 @@ void control_flow_servo_dir(real32_T rtu_angle, uint8_T rtu_turn_able_flag,
     localDW->is_c3_control_flow = control_flow_IN_direction_dec;
   } else {
     /* case IN_direction_dec: */
-    if (rtu_turn_able_flag == 1) {
-      ang_temp = control_flow_ang_min;
-    } else if (rtu_turn_able_flag == 2) {
+    ang_temp = rtu_angle + 120.0F;
+    if (rtu_angle + 120.0F > control_flow_ang_max) {
       ang_temp = control_flow_ang_max;
     } else {
-      ang_temp = rtu_angle + 120.0F;
-      if (rtu_angle + 120.0F > control_flow_ang_max) {
-        ang_temp = control_flow_ang_max;
-      } else {
-        if (rtu_angle + 120.0F < control_flow_ang_min) {
-          ang_temp = control_flow_ang_min;
-        }
+      if (rtu_angle + 120.0F < control_flow_ang_min) {
+        ang_temp = control_flow_ang_min;
       }
     }
 
@@ -241,6 +235,7 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
   real32_T err_velo;
   real32_T goal_local;
   uint16_T tmp;
+  boolean_T guard1 = false;
 
   /* Chart: '<S1>/velo_adjust' incorporates:
    *  Inport: '<Root>/Input2'
@@ -263,12 +258,12 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
     control_flow_B->PID = 0.0F;
     control_flow_B->direction = 0U;
   } else if (control_flow_DW->is_c2_control_flow == control_flow_IN_velo_com) {
-    if (control_flow_U->Input1.input_velo_r64 > 300.0F) {
+    if (control_flow_U->Input1.input_velo_r32 > 300.0F) {
       goal_local = 300.0F;
-    } else if (control_flow_U->Input1.input_velo_r64 < -300.0F) {
+    } else if (control_flow_U->Input1.input_velo_r32 < -300.0F) {
       goal_local = -300.0F;
     } else {
-      goal_local = control_flow_U->Input1.input_velo_r64;
+      goal_local = control_flow_U->Input1.input_velo_r32;
     }
 
     if (control_flow_U->flag.move != 1) {
@@ -315,12 +310,10 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
     -(int32_T)(uint32_T)-goal_local : (uint32_T)goal_local;
 
   /* Chart: '<S1>/servo_dir' incorporates:
-   *  Inport: '<Root>/Input'
    *  Inport: '<Root>/Input1'
    */
-  control_flow_servo_dir(control_flow_U->Input1.input_angle_r64,
-    control_flow_U->flag.turn_move, &control_flow_B->sf_servo_dir,
-    &control_flow_DW->sf_servo_dir);
+  control_flow_servo_dir(control_flow_U->Input1.input_angle_r32,
+    &control_flow_B->sf_servo_dir, &control_flow_DW->sf_servo_dir);
 
   /* Chart: '<S1>/Chart' incorporates:
    *  Inport: '<Root>/Input'
@@ -331,13 +324,22 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
     control_flow_B->blink_left = 0U;
     control_flow_B->blink_right = 0U;
   } else if (control_flow_DW->is_c4_control_flow == control_flow_IN_blink_com) {
-    if (control_flow_U->flag.blinker == 1) {
-      control_flow_B->blink_left = 0U;
-      control_flow_B->blink_right = 1U;
-    } else if (control_flow_U->flag.blinker == 2) {
-      control_flow_B->blink_left = 1U;
-      control_flow_B->blink_right = 0U;
+    guard1 = false;
+    if (control_flow_U->flag.turn == 1) {
+      if (control_flow_U->flag.steer == 1) {
+        control_flow_B->blink_left = 1U;
+        control_flow_B->blink_right = 0U;
+      } else if (control_flow_U->flag.steer == 0) {
+        control_flow_B->blink_left = 0U;
+        control_flow_B->blink_right = 1U;
+      } else {
+        guard1 = true;
+      }
     } else {
+      guard1 = true;
+    }
+
+    if (guard1) {
       control_flow_B->blink_left = 0U;
       control_flow_B->blink_right = 0U;
     }

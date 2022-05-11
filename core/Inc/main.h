@@ -33,8 +33,14 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include <math.h>
 #include <string.h>
-#include "struct.h"
+
+#include "user_struct.h"
 #include "control_flow.h"
+
+#include "user_motor.h"
+#include "user_tim.h"
+#include "user_usart.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_flow'.
  *
- * Model version                  : 1.159
+ * Model version                  : 1.162
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed May  4 03:15:37 2022
+ * C/C++ source code generated on : Wed May 11 16:41:14 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -72,8 +72,8 @@ typedef struct tag_RTM_control_flow_T RT_MODEL_control_flow_T;
 #define DEFINED_TYPEDEF_FOR_FROM_LATTE_
 
 typedef struct {
-  real32_T input_angle_r64;
-  real32_T input_velo_r64;
+  real32_T input_angle_r32;
+  real32_T input_velo_r32;
 } FROM_LATTE;
 
 #endif
@@ -93,8 +93,8 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_FROM_LATTE_FLAG_
 
 typedef struct {
-  uint8_T blinker;
-  uint8_T turn_move;
+  uint8_T steer;
+  uint8_T turn;
   uint8_T move;
 } FROM_LATTE_FLAG;
 
