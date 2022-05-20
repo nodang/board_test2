@@ -1,18 +1,12 @@
-/*
- * motor.h
- *
- *  Created on: Mar 11, 2022
- *      Author: kimjs
- */
 
-#ifndef __MOTOR_H__
-#define __MOTOR_H__
+#ifndef __U_TIM_H__
+#define __U_TIM_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "main.h"
+#include "user_main.h"
 
 extern RT_MODEL_control_flow_T control_flow;
 extern B_control_flow_T control_flow_B;
@@ -20,17 +14,14 @@ extern ExtU_control_flow_T control_flow_IN;
 extern ExtY_control_flow_T control_flow_OUT;
 extern DW_control_flow_T control_flow_DW;
 
-extern bit_field_flag_t g_Flag;
-extern motor_vari g_motor;
-
-
-void init_motor_variable( motor_vari *pm );
+void timer7_ISR(TIM_HandleTypeDef *htim);
 void timer9_motor_ISR(void);
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MOTOR_H__ */
+#endif /* __U_TIM_H__ */
+
 

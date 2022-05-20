@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 #include "main.h"
-
+#include "user_main.h"
 
 extern st_protocol st_ptcl;
 

@@ -31,15 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <math.h>
-#include <string.h>
-
-#include "user_struct.h"
-#include "control_flow.h"
-
-#include "user_motor.h"
-#include "user_tim.h"
-#include "user_usart.h"
+#include <user_main.h>
 
 /* USER CODE END Includes */
 
