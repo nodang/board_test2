@@ -1,10 +1,10 @@
 
-#include "tim.h"
 #include "user_main.h"
+#include "tim.h"
 
 void main_init(void)
 {
-	HAL_TIM_Base_Start_IT(&htim9); 		// APB2 TIMER IT(168)
+    HAL_TIM_Base_Start_IT(&htim9); 		// APB2 TIMER IT(168)
 	HAL_TIM_Base_Start_IT(&htim7);    	// APB1 TIMER IT(84)
 	
 	HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
@@ -19,9 +19,10 @@ void main_init(void)
 	control_flow.dwork = &control_flow_DW;
 	
 	control_flow_initialize(&control_flow);
-	
-	control_flow.inputs->Input1.input_angle_r32 = (real32_T)90;
-	control_flow.inputs->Input1.input_velo_r32 = (real32_T)(-150);
+
+	st_ptcl.angle = (real32_T)90;
+	//control_flow.inputs->Input1.input_angle_r32 = (real32_T)90;
+	control_flow.inputs->Input1.input_velo_r32 = (real32_T)(-250);
 
 	receive_uart_start_it();
 

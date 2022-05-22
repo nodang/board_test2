@@ -3,7 +3,8 @@
 #define __U_MAIN_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <math.h>
@@ -16,8 +17,8 @@ extern "C" {
 #include "user_tim.h"
 #include "user_usart.h"
 
-void main_init(void);
-void main_while(void);
+    void main_init(void);
+    void main_while(void);
 
 #ifdef __cplusplus
 }

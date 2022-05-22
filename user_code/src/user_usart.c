@@ -1,6 +1,6 @@
 
-#include "usart.h"
 #include "user_usart.h"
+#include "usart.h"
 
 #include <stdarg.h>
 #include <stdio.h>
