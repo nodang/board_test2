@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_flow'.
  *
- * Model version                  : 1.166
+ * Model version                  : 1.169
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sat May 21 01:48:12 2022
+ * C/C++ source code generated on : Fri Sep 16 01:24:31 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -84,7 +84,6 @@ typedef struct {
 typedef struct {
   uint16_T encoder_u16;
   uint16_T motor_dir_u16;
-  uint32_T accel_u32;
 } MOTOR_CONTROL;
 
 #endif
@@ -95,7 +94,6 @@ typedef struct {
 typedef struct {
   uint8_T steer;
   uint8_T turn;
-  uint8_T move;
 } FROM_LATTE_FLAG;
 
 #endif
@@ -109,7 +107,7 @@ typedef struct {
   uint32_T servo_val_u32;
   uint8_T blinker_left_u8;
   uint8_T blinker_right_u8;
-  uint8_T start_stop_u8;
+  uint8_T brake_light_u8;
 } RETURN;
 
 #endif
@@ -144,14 +142,15 @@ typedef struct {
   uint8_T direction;                   /* '<S3>/Chart' */
   uint8_T blink_right;                 /* '<S1>/Chart' */
   uint8_T blink_left;                  /* '<S1>/Chart' */
+  uint8_T brake;                       /* '<S1>/Chart' */
   B_velo_adjust_control_flow_T sf_velo_adjust;/* '<S1>/velo_adjust' */
   B_servo_dir_control_flow_T sf_servo_dir;/* '<S1>/servo_dir' */
 } B_control_flow_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real_T pid_i;                        /* '<S3>/Chart' */
-  real32_T pid_d[3];                   /* '<S3>/Chart' */
+  real_T save_velo;                    /* '<S1>/Chart' */
+  real32_T pid_p;                      /* '<S3>/Chart' */
   uint8_T is_active_c2_control_flow;   /* '<S3>/Chart' */
   uint8_T is_c2_control_flow;          /* '<S3>/Chart' */
   uint8_T is_active_c4_control_flow;   /* '<S1>/Chart' */

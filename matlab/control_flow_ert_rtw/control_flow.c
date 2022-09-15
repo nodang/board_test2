@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_flow'.
  *
- * Model version                  : 1.166
+ * Model version                  : 1.169
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Sat May 21 01:48:12 2022
+ * C/C++ source code generated on : Fri Sep 16 01:24:31 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -32,9 +32,9 @@
 #define control_fl_IN_NO_ACTIVE_CHILD_k ((uint8_T)0U)
 #define control_flow_IN_velocity_com   ((uint8_T)1U)
 #define control_flow_IN_velocity_dec   ((uint8_T)2U)
-#define control_flow_MAX_uint16_T_2    (32767)
+#define control_flow_MAX_U16_DIV2      (32767)
 #define control_flow_irq_prd           (0.0005F)
-#define control_flow_pulse_per_velo    (0.101654485F)
+#define control_flow_pulse_per_velo    (0.603215754F)
 
 /* Named constants for Chart: '<S1>/Chart' */
 #define control_fl_IN_NO_ACTIVE_CHILD_h ((uint8_T)0U)
@@ -44,8 +44,7 @@
 /* Named constants for Chart: '<S3>/Chart' */
 #define control_flow_IN_velo_com       ((uint8_T)1U)
 #define control_flow_IN_velo_dec       ((uint8_T)2U)
-#define control_flow_kd                (7.5)
-#define control_flow_kp                (10.0)
+#define control_flow_kp                (0.05)
 
 const RETURN control_flow_rtZRETURN = {
   0U,                                  /* motor_dir_u8 */
@@ -53,7 +52,7 @@ const RETURN control_flow_rtZRETURN = {
   0U,                                  /* servo_val_u32 */
   0U,                                  /* blinker_left_u8 */
   0U,                                  /* blinker_right_u8 */
-  0U                                   /* start_stop_u8 */
+  0U                                   /* brake_light_u8 */
 } ;                                    /* RETURN ground */
 
 void control_flow_servo_dir_Init(B_servo_dir_control_flow_T *localB,
@@ -196,7 +195,7 @@ void control_flow_velo_adjust(uint16_T rtu_encoder, B_velo_adjust_control_flow_T
       localB->encoder_velo = 0.0F / ((real32_T)localDW->skip_prd_cnt *
         control_flow_irq_prd);
     } else {
-      if (rtu_encoder > control_flow_MAX_uint16_T_2) {
+      if (rtu_encoder > control_flow_MAX_U16_DIV2) {
         encoder_temp = rtu_encoder - 65536;
       }
 
@@ -232,9 +231,8 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
     control_flow_M->inputs;
   ExtY_control_flow_T *control_flow_Y = (ExtY_control_flow_T *)
     control_flow_M->outputs;
-  real32_T err_velo;
-  real32_T goal_local;
-  uint16_T tmp;
+  real32_T tmp;
+  uint16_T tmp_0;
   boolean_T guard1 = false;
 
   /* Chart: '<S1>/velo_adjust' incorporates:
@@ -244,51 +242,31 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
     &control_flow_B->sf_velo_adjust, &control_flow_DW->sf_velo_adjust);
 
   /* Chart: '<S3>/Chart' incorporates:
-   *  Inport: '<Root>/Input'
    *  Inport: '<Root>/Input1'
    *  Inport: '<Root>/Input2'
    */
   if (control_flow_DW->is_active_c2_control_flow == 0U) {
     control_flow_DW->is_active_c2_control_flow = 1U;
     control_flow_DW->is_c2_control_flow = control_flow_IN_velo_dec;
-    control_flow_DW->pid_i = 0.0;
-    control_flow_DW->pid_d[0] = 0.0F;
-    control_flow_DW->pid_d[1] = 0.0F;
-    control_flow_DW->pid_d[2] = 0.0F;
+    control_flow_DW->pid_p = 0.0F;
     control_flow_B->PID = 0.0F;
     control_flow_B->direction = 0U;
   } else if (control_flow_DW->is_c2_control_flow == control_flow_IN_velo_com) {
-    if (control_flow_U->Input1.input_velo_r32 > 300.0F) {
-      goal_local = 300.0F;
-    } else if (control_flow_U->Input1.input_velo_r32 < -300.0F) {
-      goal_local = -300.0F;
-    } else {
-      goal_local = control_flow_U->Input1.input_velo_r32;
-    }
-
-    if (control_flow_U->flag.move != 1) {
-      goal_local = 0.0F;
-    }
-
-    err_velo = goal_local - control_flow_B->sf_velo_adjust.encoder_velo;
-    control_flow_DW->pid_i += err_velo;
-    control_flow_DW->pid_d[2] = control_flow_DW->pid_d[1];
-    control_flow_DW->pid_d[1] = err_velo;
-    control_flow_DW->pid_d[0] = control_flow_DW->pid_d[2] -
-      control_flow_DW->pid_d[1];
-    control_flow_B->PID = (real32_T)(((control_flow_kp * err_velo + goal_local)
-      + control_flow_DW->pid_i) + control_flow_kd * control_flow_DW->pid_d[0]);
+    control_flow_DW->pid_p = (real32_T)((control_flow_U->Input1.input_velo_r32 -
+      control_flow_B->sf_velo_adjust.encoder_velo) * control_flow_kp +
+      control_flow_DW->pid_p);
+    control_flow_B->PID = control_flow_DW->pid_p;
     if (control_flow_B->PID > 0.0F) {
       control_flow_B->direction = 1U;
     } else if (control_flow_B->PID < 0.0F) {
       control_flow_B->direction = 0U;
     } else {
-      tmp = control_flow_U->Input2.motor_dir_u16;
+      tmp_0 = control_flow_U->Input2.motor_dir_u16;
       if (control_flow_U->Input2.motor_dir_u16 > 255) {
-        tmp = 255U;
+        tmp_0 = 255U;
       }
 
-      control_flow_B->direction = (uint8_T)tmp;
+      control_flow_B->direction = (uint8_T)tmp_0;
     }
 
     control_flow_B->PID = fabsf(control_flow_B->PID);
@@ -305,9 +283,9 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
   /* End of Chart: '<S3>/Chart' */
 
   /* DataTypeConversion: '<S3>/Data Type Conversion' */
-  goal_local = fmodf(floorf(control_flow_B->PID), 4.2949673E+9F);
-  control_flow_Y->Output1.motor_val_u32 = goal_local < 0.0F ? (uint32_T)
-    -(int32_T)(uint32_T)-goal_local : (uint32_T)goal_local;
+  tmp = fmodf(floorf(control_flow_B->PID), 4.2949673E+9F);
+  control_flow_Y->Output1.motor_val_u32 = tmp < 0.0F ? (uint32_T)-(int32_T)
+    (uint32_T)-tmp : (uint32_T)tmp;
 
   /* Chart: '<S1>/servo_dir' incorporates:
    *  Inport: '<Root>/Input1'
@@ -321,8 +299,10 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
   if (control_flow_DW->is_active_c4_control_flow == 0U) {
     control_flow_DW->is_active_c4_control_flow = 1U;
     control_flow_DW->is_c4_control_flow = control_flow_IN_blink_init;
+    control_flow_DW->save_velo = 0.0;
     control_flow_B->blink_left = 0U;
     control_flow_B->blink_right = 0U;
+    control_flow_B->brake = 0U;
   } else if (control_flow_DW->is_c4_control_flow == control_flow_IN_blink_com) {
     guard1 = false;
     if (control_flow_U->flag.turn == 1) {
@@ -344,6 +324,9 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
       control_flow_B->blink_right = 0U;
     }
 
+    control_flow_B->brake = (uint8_T)(control_flow_DW->save_velo >
+      control_flow_B->sf_velo_adjust.encoder_velo);
+    control_flow_DW->save_velo = control_flow_B->sf_velo_adjust.encoder_velo;
     control_flow_DW->is_c4_control_flow = control_flow_IN_blink_com;
   } else {
     /* case IN_blink_init: */
@@ -353,7 +336,6 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
   /* End of Chart: '<S1>/Chart' */
 
   /* BusCreator: '<S1>/Bus Creator' incorporates:
-   *  Inport: '<Root>/Input'
    *  Outport: '<Root>/Output1'
    */
   control_flow_Y->Output1.motor_dir_u8 = control_flow_B->direction;
@@ -361,7 +343,7 @@ void control_flow_step(RT_MODEL_control_flow_T *const control_flow_M)
     control_flow_B->sf_servo_dir.servo_temp;
   control_flow_Y->Output1.blinker_left_u8 = control_flow_B->blink_left;
   control_flow_Y->Output1.blinker_right_u8 = control_flow_B->blink_right;
-  control_flow_Y->Output1.start_stop_u8 = control_flow_U->flag.move;
+  control_flow_Y->Output1.brake_light_u8 = control_flow_B->brake;
 }
 
 /* Model initialize function */
@@ -399,10 +381,7 @@ void control_flow_initialize(RT_MODEL_control_flow_T *const control_flow_M)
   /* SystemInitialize for Chart: '<S3>/Chart' */
   control_flow_DW->is_active_c2_control_flow = 0U;
   control_flow_DW->is_c2_control_flow = control_fl_IN_NO_ACTIVE_CHILD_h;
-  control_flow_DW->pid_d[0] = 0.0F;
-  control_flow_DW->pid_d[1] = 0.0F;
-  control_flow_DW->pid_d[2] = 0.0F;
-  control_flow_DW->pid_i = 0.0;
+  control_flow_DW->pid_p = 0.0F;
   control_flow_B->direction = 0U;
   control_flow_B->PID = 0.0F;
 
@@ -413,8 +392,10 @@ void control_flow_initialize(RT_MODEL_control_flow_T *const control_flow_M)
   /* SystemInitialize for Chart: '<S1>/Chart' */
   control_flow_DW->is_active_c4_control_flow = 0U;
   control_flow_DW->is_c4_control_flow = control_fl_IN_NO_ACTIVE_CHILD_h;
+  control_flow_DW->save_velo = 0.0;
   control_flow_B->blink_right = 0U;
   control_flow_B->blink_left = 0U;
+  control_flow_B->brake = 0U;
 }
 
 /* Model terminate function */

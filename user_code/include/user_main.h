@@ -17,6 +17,12 @@ extern "C"
 #include "user_tim.h"
 #include "user_usart.h"
 
+    extern RT_MODEL_control_flow_T control_flow;
+    extern B_control_flow_T control_flow_B;
+    extern ExtU_control_flow_T control_flow_IN;
+    extern ExtY_control_flow_T control_flow_OUT;
+    extern DW_control_flow_T control_flow_DW;
+
     void main_init(void);
     void main_while(void);
 
@@ -25,4 +31,3 @@ extern "C"
 #endif
 
 #endif /* __U_MAIN_H__ */
-
